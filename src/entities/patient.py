@@ -1,0 +1,23 @@
+class Paciente:
+    def __init__(self, nombre, edad, sintomas, historialMedico=None):
+        self.nombre = nombre
+        self.edad = edad
+        self.sintomas = sintomas
+        self.doctoresAsignados = []
+        self.recetario = []
+        if historialMedico is None:
+            self.historialMedico = []
+        else:
+            self.historialMedico = historialMedico
+
+    def agregarConsultaHistorial(self, consulta):
+        self.historialMedico.append(consulta)
+
+    def obtenerUltimoDiagnostico(self):
+        if not self.historialMedico:
+            return None
+        return self.historialMedico[-1]['diagnostico']
+
+    def __str__(self):
+        sintomasStr = ', '.join(self.sintomas)
+        return f"Paciente: {self.nombre}, Edad: {self.edad}, Síntomas: {sintomasStr}"
