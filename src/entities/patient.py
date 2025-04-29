@@ -18,6 +18,6 @@ class Paciente:
             return None
         return self.historialMedico[-1]['diagnostico']
 
-    def __str__(self):
+    def datosPaciente(self):
         sintomasStr = ', '.join(self.sintomas)
         return f"Paciente: {self.nombre}, Edad: {self.edad}, Síntomas: {sintomasStr}"

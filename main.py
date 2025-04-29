@@ -7,6 +7,13 @@ ANCHO, ALTO = 1300, 900
 pantalla = pygame.display.set_mode((ANCHO, ALTO))
 pygame.display.set_caption("Hospital RPG")
 
+boton_honguito = False
+boton_chavo = False
+boton_pepe = False
+boton_kiko = False
+boton_goomba = False
+boton_bowser = False
+
 BLANCO = (255, 255, 255)
 GRIS = (200, 200, 200)
 AZUL = (100, 100, 255)
@@ -52,7 +59,8 @@ jugador_dinamico = [
     wario
 ]
 
-crear_personaje = pygame.Rect(ANCHO // 2 + 220, 50, 150, 50)  
+crear_personaje = pygame.Rect(((ANCHO // 2 + 200) + (ANCHO - (ANCHO // 2 + 200)) // 2) - 80, 50, 160, 50)  
+des_crear_personaje = True
 
 jugadores = [
     pygame.Rect(0, ALTO // 2, 40, 40)  
@@ -117,10 +125,43 @@ def dibujar_hospital():
     pygame.draw.rect(pantalla, BLANCO, (ANCHO - (ANCHO // 2 + 100) - 30, (((((ALTO // 4) * 2) - 30) // 2) - 30) + 335, 30, 60))
     pygame.draw.rect(pantalla, BLANCO, (ANCHO - (ANCHO // 2 + 100) - 30, (((((ALTO // 4) * 2) - 30) // 2) - 30) + 575, 30, 60))
     
-    pygame.draw.rect(pantalla, VERDE, crear_personaje)
     font = pygame.font.SysFont(None, 24)
-    texto_boton = font.render('Crear personaje', True, (0, 0, 0))
-    pantalla.blit(texto_boton, (crear_personaje.x + 10, crear_personaje.y + 15))
+    
+    if des_crear_personaje:
+        pygame.draw.rect(pantalla, BLANCO, crear_personaje)
+        texto_boton = font.render('Crear personaje', True, (0, 0, 0))
+        pantalla.blit(texto_boton, (crear_personaje.x + 15, crear_personaje.y + 18))
+
+    if boton_honguito:
+        pygame.draw.rect(pantalla, BLANCO, crear_personaje)
+        texto_interaccion = font.render('Iniciar registro', True, (0, 0, 0))
+        pantalla.blit(texto_interaccion, (crear_personaje.x + 15, crear_personaje.y + 18))
+
+    if boton_chavo:
+        pygame.draw.rect(pantalla, BLANCO, crear_personaje)
+        texto_interaccion = font.render('Realizar compra', True, (0, 0, 0))
+        pantalla.blit(texto_interaccion, (crear_personaje.x + 15, crear_personaje.y + 18))
+    
+    if boton_pepe:
+        pygame.draw.rect(pantalla, BLANCO, crear_personaje)
+        texto_interaccion = font.render('Hablar con Pepe', True, (0, 0, 0))
+        pantalla.blit(texto_interaccion, (crear_personaje.x + 15, crear_personaje.y + 18))
+
+    if boton_kiko:
+        pygame.draw.rect(pantalla, BLANCO, crear_personaje)
+        texto_interaccion = font.render('Hablar con Kiko', True, (0, 0, 0))
+        pantalla.blit(texto_interaccion, (crear_personaje.x + 15, crear_personaje.y + 18))
+
+    if boton_goomba:
+        pygame.draw.rect(pantalla, BLANCO, crear_personaje)
+        texto_interaccion = font.render('Hablar con Goomba', True, (0, 0, 0))
+        pantalla.blit(texto_interaccion, (crear_personaje.x + 10, crear_personaje.y + 18))
+
+    if boton_bowser:
+        pygame.draw.rect(pantalla, BLANCO, crear_personaje)
+        texto_interaccion = font.render('Hablar con Bowser', True, (0, 0, 0))
+        pantalla.blit(texto_interaccion, (crear_personaje.x + 5, crear_personaje.y + 18))
+
 
 def personajes_dinamicos():
     for i, jugador in enumerate(jugadores):
@@ -132,19 +173,18 @@ def personajes_estaticos():
         pantalla.blit(i["personaje"], i["coordenada"])
     
 def interaccion_personajes():
+    global boton_honguito, boton_chavo, boton_pepe, boton_kiko, boton_goomba, boton_bowser, des_crear_personaje
+
     jugador = jugadores[jugador_seleccionado]
-    if jugador.colliderect(honguito_rect):
-        print("Honguito") 
-    elif jugador.colliderect(goomba_rect):
-        print("Gommba")
-    elif jugador.colliderect(pepe_rect):
-        print("Pepe")
-    elif jugador.colliderect(kiko_rect):
-        print("Kiko")
-    elif jugador.colliderect(chavo_rect):
-        print("Chavo")
-    elif jugador.colliderect(bowser_rect):
-        print("Bowser")
+    
+    boton_honguito = jugador.colliderect(honguito_rect)
+    boton_chavo = jugador.colliderect(chavo_rect)
+    boton_pepe = jugador.colliderect(pepe_rect)
+    boton_kiko = jugador.colliderect(kiko_rect)
+    boton_goomba = jugador.colliderect(goomba_rect)
+    boton_bowser = jugador.colliderect(bowser_rect)
+
+    des_crear_personaje = not any([boton_honguito, boton_chavo, boton_pepe, boton_kiko, boton_goomba, boton_bowser])
     
 def mover_jugador():
     global jugador_seleccionado
@@ -177,7 +217,7 @@ def mover_jugador():
     jugadores[jugador_seleccionado] = jugador
 
 def seleccionar_jugador():
-    global jugador_seleccionado
+    global jugador_seleccionado, boton_honguito, boton_chavo, boton_pepe, boton_kiko, boton_goomba, boton_bowser, des_crear_personaje
 
     for evento in pygame.event.get():
         if evento.type == pygame.QUIT:
@@ -206,10 +246,34 @@ def seleccionar_jugador():
                 jugador_seleccionado = 7
 
         if evento.type == pygame.MOUSEBUTTONDOWN:
-            if crear_personaje.collidepoint(evento.pos):
+            if des_crear_personaje and crear_personaje.collidepoint(evento.pos):
                 if len(jugadores) < 8:  
                     nuevo = pygame.Rect(spawn.x, spawn.y, 40, 40)
                     jugadores.append(nuevo)
+
+            if boton_honguito and crear_personaje.collidepoint(evento.pos):
+                print("honguito")
+                boton_honguito = False
+
+            if boton_chavo and crear_personaje.collidepoint(evento.pos):
+                print("chavo")
+                boton_chavo = False
+            
+            if boton_pepe and crear_personaje.collidepoint(evento.pos):
+                print("Interacción con Pepe")
+                boton_pepe = False
+
+            if boton_kiko and crear_personaje.collidepoint(evento.pos):
+                print("Interacción con Kiko")
+                boton_kiko = False
+
+            if boton_goomba and crear_personaje.collidepoint(evento.pos):
+                print("Interacción con Goomba")
+                boton_goomba = False
+
+            if boton_bowser and crear_personaje.collidepoint(evento.pos):
+                print("Interacción con Bowser")
+                boton_bowser = False
     
 while True:
     seleccionar_jugador()

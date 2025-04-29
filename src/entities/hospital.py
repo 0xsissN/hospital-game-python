@@ -1,3 +1,6 @@
+from entities.doctor import Doctor
+from entities.patient import Paciente
+
 class Hospital:
     def __init__(self, nombre):
         self.nombre = nombre
@@ -44,16 +47,16 @@ class Hospital:
         if not asignado:
             print("No se encontró especialidad adecuada")
 
-    def atenderPacientes(self):
-        print("\nIniciando consultas:")
-        for doctor in self.doctores.values():
-            while not doctor.pacientes.estaVacia():
-                doctor.atenderPaciente()
+    # def atenderPacientes(self):
+    #     print("\nIniciando consultas:")
+    #     for doctor in self.doctores.values():
+    #         while not doctor.pacientes.estaVacia():
+    #             doctor.atenderPaciente()
 
-    def enviarAFarmacia(self, farmacia):
-        print("\nProceso en farmacia:")
-        for paciente in self.pacientes:
-            if paciente.recetario:
-                dinero = int(
-                    input(f"Dinero disponible para {paciente.nombre}: bs"))
-                farmacia.procesarCompra(paciente, dinero)
+    # def enviarAFarmacia(self, farmacia):
+    #     print("\nProceso en farmacia:")
+    #     for paciente in self.pacientes:
+    #         if paciente.recetario:
+    #             dinero = int(
+    #                 input(f"Dinero disponible para {paciente.nombre}: bs"))
+    #             farmacia.procesarCompra(paciente, dinero)
