@@ -1,3 +1,5 @@
+from entities.queue import Cola
+
 class Doctor:
     def __init__(self, nombre, especialidad):
         self.nombre = nombre
