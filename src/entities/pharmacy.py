@@ -11,7 +11,11 @@ class Farmacia:
             "Medicina para MEDICINA GENERAL (ajustada)": 20
         }
 
-    def procesarCompra(self, paciente, dinero):
+    def procesarCompra(self, paciente):
+        if len(paciente.recetario) == 0:
+            print("Usted no cuenta con un recetario")
+            return
+        
         total = sum(self.precios.get(receta, 0)
                     for receta in paciente.recetario)
 
@@ -20,11 +24,11 @@ class Farmacia:
             print(f"- {receta}: ${self.precios.get(receta, 0)}")
 
         print(f"\nTotal: ${total}")
-        print(f"Pago: ${dinero}")
+        print(f"Pago: ${paciente.dinero}")
 
-        if dinero >= total:
+        if paciente.dinero >= total:
             print("Compra exitosa")
             return True
 
-        print(f"Faltan ${total - dinero}")
+        print(f"Faltan ${total - paciente.dinero}")
         return False

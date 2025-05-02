@@ -1,7 +1,8 @@
 class Paciente:
-    def __init__(self, nombre, edad, sintomas, historialMedico=None):
+    def __init__(self, nombre, edad, dinero, sintomas, historialMedico=None):
         self.nombre = nombre
         self.edad = edad
+        self.dinero = dinero
         self.sintomas = sintomas
         self.doctoresAsignados = []
         self.recetario = []

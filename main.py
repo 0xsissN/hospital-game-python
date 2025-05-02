@@ -1,11 +1,24 @@
 import pygame
 import sys
 
+from src.entities.hospital import Hospital
+from src.entities.player import Player
+from src.entities.patient import Paciente
+from src.entities.doctor import Doctor
+from src.entities.pharmacy import Farmacia
+
 pygame.init()
 
 ANCHO, ALTO = 1300, 900
 pantalla = pygame.display.set_mode((ANCHO, ALTO))
 pygame.display.set_caption("Hospital RPG")
+
+hospital = Hospital("Hospital central")
+drPepe = Doctor("Dr Pepe", "PEDIATRIA")
+drKiko = Doctor("Dr. Kiko", "CARDIOLOGIA")
+drGoomba = Doctor("Dr. Goomba", "NEUROLOGIA")
+drBowser = Doctor("Dr. Bowser", "MEDICINA GENERAL")
+fChavo = Farmacia()
 
 boton_honguito = False
 boton_chavo = False
@@ -63,7 +76,7 @@ crear_personaje = pygame.Rect(((ANCHO // 2 + 200) + (ANCHO - (ANCHO // 2 + 200))
 des_crear_personaje = True
 
 jugadores = [
-    pygame.Rect(0, ALTO // 2, 40, 40)  
+    Player(pygame.Rect(0, ALTO // 2, 40, 40))
 ]
 
 honguito = pygame.image.load('./assets/images/cstatic/honguito.png')
@@ -162,11 +175,10 @@ def dibujar_hospital():
         texto_interaccion = font.render('Hablar con Bowser', True, (0, 0, 0))
         pantalla.blit(texto_interaccion, (crear_personaje.x + 5, crear_personaje.y + 18))
 
-
 def personajes_dinamicos():
     for i, jugador in enumerate(jugadores):
-        imagen = jugador_dinamico[i % len(jugador_dinamico)]  
-        pantalla.blit(imagen, jugador.topleft)
+        imagen = jugador_dinamico[i % len(jugador_dinamico)]
+        pantalla.blit(imagen, jugador.rect.topleft)
 
 def personajes_estaticos():
     for i in jugador_estatico:
@@ -177,12 +189,12 @@ def interaccion_personajes():
 
     jugador = jugadores[jugador_seleccionado]
     
-    boton_honguito = jugador.colliderect(honguito_rect)
-    boton_chavo = jugador.colliderect(chavo_rect)
-    boton_pepe = jugador.colliderect(pepe_rect)
-    boton_kiko = jugador.colliderect(kiko_rect)
-    boton_goomba = jugador.colliderect(goomba_rect)
-    boton_bowser = jugador.colliderect(bowser_rect)
+    boton_honguito = jugador.rect.colliderect(honguito_rect)
+    boton_chavo = jugador.rect.colliderect(chavo_rect)
+    boton_pepe = jugador.rect.colliderect(pepe_rect)
+    boton_kiko = jugador.rect.colliderect(kiko_rect)
+    boton_goomba = jugador.rect.colliderect(goomba_rect)
+    boton_bowser = jugador.rect.colliderect(bowser_rect)
 
     des_crear_personaje = not any([boton_honguito, boton_chavo, boton_pepe, boton_kiko, boton_goomba, boton_bowser])
     
@@ -190,11 +202,11 @@ def mover_jugador():
     global jugador_seleccionado
 
     teclas = pygame.key.get_pressed()
-
     jugador = jugadores[jugador_seleccionado]
+    rect = jugador.rect
 
-    nueva_x = jugador.x
-    nueva_y = jugador.y
+    nueva_x = rect.x
+    nueva_y = rect.y
 
     if teclas[pygame.K_LEFT]:
         nueva_x -= velocidad
@@ -205,16 +217,34 @@ def mover_jugador():
     if teclas[pygame.K_DOWN]:
         nueva_y += velocidad
 
-    if 0 <= nueva_x <= ANCHO - jugador.width:
-        jugador.x = nueva_x
-    if 0 <= nueva_y <= ALTO - jugador.height:
-        jugador.y = nueva_y
+    if 0 <= nueva_x <= ANCHO - rect.width:
+        rect.x = nueva_x
+    if 0 <= nueva_y <= ALTO - rect.height:
+        rect.y = nueva_y
 
-    for i, otro_jugador in enumerate(jugadores):
-        if i != jugador_seleccionado and jugador.colliderect(otro_jugador):
-            return
+def registrar_paciente():
+    nombre = input("Ingrese su nombre: ")
+    edad = int(input("Ingrese su edad: "))
+    dinero = int(input("Con cuanto dinero va a entrar: "))
+    sintomas = []
 
-    jugadores[jugador_seleccionado] = jugador
+    while True:
+        x = int(input("Agregar sintoma 1. Si | 2. No: "))
+        if x == 1:
+            s = input("Ingrese sintoma: ")
+            sintomas.append(s)
+        elif x == 2:
+            break
+        else:
+            print("Esa opcion no existe")
+    
+    jugador = jugadores[jugador_seleccionado]
+    jugador.patient = Paciente(nombre, edad, dinero, sintomas)
+    doctor = hospital.asignarDoctor(jugador.patient)
+
+    if doctor.nombre == "Dr. Pepe":
+        print(f"Doctor asignado {doctor.nombre}, especialidad {doctor.especialidad}")
+        drPepe.pacienteAsignado(jugador.patient)
 
 def seleccionar_jugador():
     global jugador_seleccionado, boton_honguito, boton_chavo, boton_pepe, boton_kiko, boton_goomba, boton_bowser, des_crear_personaje
@@ -248,33 +278,35 @@ def seleccionar_jugador():
         if evento.type == pygame.MOUSEBUTTONDOWN:
             if des_crear_personaje and crear_personaje.collidepoint(evento.pos):
                 if len(jugadores) < 8:  
-                    nuevo = pygame.Rect(spawn.x, spawn.y, 40, 40)
+                    nuevo = Player(pygame.Rect(spawn.x, spawn.y, 40, 40))
                     jugadores.append(nuevo)
 
             if boton_honguito and crear_personaje.collidepoint(evento.pos):
-                print("honguito")
-                boton_honguito = False
+                jugador = jugadores[jugador_seleccionado]
+                if jugador.patient is None:
+                    registrar_paciente()
+                else:
+                    print(f"{jugador.patient.nombre} ya está registrado.")
 
             if boton_chavo and crear_personaje.collidepoint(evento.pos):
-                print("chavo")
-                boton_chavo = False
+                jugador = jugadores[jugador_seleccionado]
+                if jugador.patient is None:
+                    print("No se ha registrado en el hospital")
+                else:
+                    fChavo.procesarCompra(jugador.patient)
             
             if boton_pepe and crear_personaje.collidepoint(evento.pos):
-                print("Interacción con Pepe")
-                boton_pepe = False
+                drPepe.atenderPaciente()
 
             if boton_kiko and crear_personaje.collidepoint(evento.pos):
-                print("Interacción con Kiko")
-                boton_kiko = False
-
+                drKiko.atenderPaciente()
+                
             if boton_goomba and crear_personaje.collidepoint(evento.pos):
-                print("Interacción con Goomba")
-                boton_goomba = False
-
+                drGoomba.atenderPaciente()
+                
             if boton_bowser and crear_personaje.collidepoint(evento.pos):
-                print("Interacción con Bowser")
-                boton_bowser = False
-    
+                drBowser.atenderPaciente()
+                
 while True:
     seleccionar_jugador()
     mover_jugador()

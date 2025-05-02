@@ -1,10 +1,13 @@
-from entities.queue import Cola
+from .queue import Cola
 
 class Doctor:
     def __init__(self, nombre, especialidad):
         self.nombre = nombre
         self.especialidad = especialidad
         self.pacientes = Cola()
+
+    def pacienteAsignado(self, paciente):
+        self.pacientes.encolar(paciente)
 
     def atenderPaciente(self):
         if self.pacientes.estaVacia():
