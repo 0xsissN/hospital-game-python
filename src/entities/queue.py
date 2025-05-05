@@ -1,14 +1,14 @@
-class Cola:
+class Queue:
     def __init__(self):
-        self.elementos = []
+        self.items = []
 
-    def encolar(self, elemento):
-        self.elementos.insert(0, elemento)
+    def push(self, element):
+        self.items.insert(0, element)
 
-    def desencolar(self):
-        if self.estaVacia():
+    def pop(self):
+        if self.isEmpty():
             return None
-        return self.elementos.pop()
+        return self.items.pop()
 
-    def estaVacia(self):
-        return len(self.elementos) == 0
+    def isEmpty(self):
+        return len(self.items) == 0

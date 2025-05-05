@@ -1,41 +1,33 @@
-from .queue import Cola
+from .queue import Queue
 
 class Doctor:
-    def __init__(self, nombre, especialidad):
-        self.nombre = nombre
-        self.especialidad = especialidad
-        self.pacientes = Cola()
+    def __init__(self, name, speciality):
+        self.name = name
+        self.speciality = speciality
+        self.patients = Queue()
 
-    def pacienteAsignado(self, paciente):
-        self.pacientes.encolar(paciente)
+    def assignedPatient(self, patient):
+        self.patients.push(patient)
 
-    def atenderPaciente(self):
-        if self.pacientes.estaVacia():
-            print(f"{self.nombre} no tiene pacientes en espera")
-            return None
+    def attendPatient(self):
+        if self.patients.isEmpty():
+            print(f"{self.name} no tiene pacientes en espera")
+            return
 
-        paciente = self.pacientes.desencolar()
-        print(f"\n{self.nombre} atendiendo a {paciente.nombre}")
+        patient = self.patients.pop()
+        print(f"\n{self.name} atendiendo a {patient.name}")
 
-        if paciente.historialMedico:
-            print(f"Historial previo: {paciente.obtenerUltimoDiagnostico()}")
+        recipe = "Medicina para " + self.speciality 
+        patient.recipeBook.append(recipe)
 
-        receta = self.generarReceta(paciente)
-        paciente.recetario.append(receta)
-
-        consulta = {
-            'doctor': self.nombre,
-            'especialidad': self.especialidad,
-            'sintomas': paciente.sintomas,
-            'diagnostico': receta,
-            'tratamiento': receta
+        query = {
+            'doctor': self.name,
+            'especialidad': self.speciality,
+            'diagnostico': recipe,
+            'tratamiento': recipe
         }
-        paciente.agregarConsultaHistorial(consulta)
 
-        print(f"Receta: {receta}")
-        return paciente
+        patient.medicalHistory.append(query)
 
-    def generarReceta(self, paciente):
-        if paciente.historialMedico:
-            return f"Medicina para {self.especialidad} (ajustada)"
-        return f"Medicina para {self.especialidad}"
+        print(f"Receta: {recipe}")
+

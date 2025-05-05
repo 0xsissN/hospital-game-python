@@ -1,6 +1,6 @@
-class Farmacia:
+class Pharmacy:
     def __init__(self):
-        self.precios = {
+        self.prices = {
             "Medicina para PEDIATRIA": 10,
             "Medicina para CARDIOLOGIA": 20,
             "Medicina para NEUROLOGIA": 25,
@@ -11,24 +11,23 @@ class Farmacia:
             "Medicina para MEDICINA GENERAL (ajustada)": 20
         }
 
-    def procesarCompra(self, paciente):
-        if len(paciente.recetario) == 0:
+    def processPurchase(self, patient):
+        if len(patient.recipeBook) == 0:
             print("Usted no cuenta con un recetario")
             return
         
-        total = sum(self.precios.get(receta, 0)
-                    for receta in paciente.recetario)
+        total = sum(self.prices.get(i, 0) for i in patient.recipeBook)
 
-        print(f"\nFactura para {paciente.nombre}:")
-        for receta in paciente.recetario:
-            print(f"- {receta}: ${self.precios.get(receta, 0)}")
+        print(f"\nFactura para {patient.name}:")
+        for i in patient.recipeBook:
+            print(f"- {i}: ${self.prices.get(i, 0)}")
 
         print(f"\nTotal: ${total}")
-        print(f"Pago: ${paciente.dinero}")
+        print(f"Pago: ${patient.money}")
 
-        if paciente.dinero >= total:
+        if patient.money >= total:
             print("Compra exitosa")
-            return True
-
-        print(f"Faltan ${total - paciente.dinero}")
-        return False
+            return
+    
+        print(f"Faltan ${total - patient.money}")
+    

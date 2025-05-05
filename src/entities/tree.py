@@ -3,7 +3,7 @@ class Node:
         self.value = value
         self.nodes = []
 
-    def addChild(self, node):
+    def child(self, node):
         self.nodes.append(node)
     
         
