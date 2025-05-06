@@ -5,23 +5,24 @@ This project is a simulation of a hospital system built with **Python** and **Py
 ## 🎮 Features
 
 - Creation of interactive, movable characters.
+- Object-oriented programming with **classes** for modular and maintainable code.
 - Interaction with:
   - **Reception**: Patient registration.
   - **Doctors**: Assignment based on symptoms using a decision tree.
   - **Pharmacy**: Prescription dispensing and payment.
-- Implementation of data structures:
+- Implementation of various data structures:
   - **Queues**: To manage lines at reception and pharmacy.
-  - **Stacks** and **Lists**: For event handling and history tracking.
-  - **Dictionaries**: To store patient and doctor data.
-  - **Tree structure**: To select the appropriate doctor based on symptoms.
+  - **Stacks** and **Lists**: For event handling and patient history.
+  - **Dictionaries**: To store and retrieve data about patients and doctors.
+  - **Tree**: For selecting the appropriate doctor based on symptoms.
  
 ## 🚀 Installation
 
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/your_username/your_repository.git
-   cd your_repository
+   git clone https://github.com/0xsissN/hospital-game-python.git
+   cd hospital-game-python
 
 2. Install the required dependencies:
 
